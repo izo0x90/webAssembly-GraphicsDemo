@@ -1,6 +1,6 @@
 {
 	"name": "webassembly-graphicsdemo",
-	"version": "0.7.0",
+	"version": "0.8.0",
 	"description": "Graphics demo implemented in webAssembly WAT format. BAre web browsers the new Amiga?",
 	"scripts": {
 		"build": "gulp buildAll",

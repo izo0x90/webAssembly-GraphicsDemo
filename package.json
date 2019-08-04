@@ -1,19 +1,31 @@
 {
-  "name": "@wasm/WasmGrDemo",
-  "description": "HristoGueorguiev.com",
-  "version": "1.0.0",
-  "scripts": {
-    "build": "gulp --gulpfile ./build.ts"
-  },
-  "devDependencies": {
-    "@wasm/studio-utils": "*",
-    "gulp": "~3.9.1",
-    "ts-node": "~5.0.0",
-    "typescript": "~2.7.2"
-  },
-  "wasmStudio": {
-    "name": "Wasm drawing on canvas",
-    "description": "Generating image data with a Webassembly module!",
-    "icon": "wat-lang-file-icon"
-  }
+	"name": "webassembly-graphicsdemo",
+	"version": "0.7.0",
+	"description": "Graphics demo implemented in webAssembly WAT format. BAre web browsers the new Amiga?",
+	"scripts": {
+		"build": "gulp buildAll",
+		"dev": "gulp",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/izo0x90/webAssembly-GraphicsDemo.git"
+	},
+	"keywords": [
+		"wasm",
+		"wat",
+		"webassembly",
+		"graphics",
+		"demo"
+	],
+	"author": "Hristo I. Gueorguiev",
+	"bugs": {
+		"url": "https://github.com/izo0x90/webAssembly-GraphicsDemo/issues"
+	},
+	"homepage": "https://github.com/izo0x90/webAssembly-GraphicsDemo#readme",
+	"devDependencies": {
+		"gulp": "^4.0.2",
+		"gulp-connect": "^5.7.0",
+		"wabt": "^1.0.11"
+	}
 }

@@ -18,6 +18,11 @@ gulp.task("server", async function() {
 	connect.server({ root: [".", "out"] });
 });
 
-gulp.task("buildAll", gulp.series("buildWasm", "copyStatic"));
+gulp.task("watchFiles", async () => {
+	gulp.watch("src/*.wat", gulp.series("buildWasm"));
+	gulp.watch("src/*.{html,js}", gulp.series("copyStatic"));
+});
 
-gulp.task("default", gulp.series("buildAll", "server"));
+gulp.task("buildAll", gulp.parallel("buildWasm", "copyStatic"));
+
+gulp.task("default", gulp.series("buildAll", gulp.parallel("server", "watchFiles")));

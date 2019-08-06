@@ -7,7 +7,7 @@
 
   ;;(memory (export "screenbuf") $mem_pages) Not needed we now define liner memory in JS to size with canvas
 
-  (table 7 anyfunc)
+  (table 9 anyfunc)
   (elem (i32.const 0)
     $solidcolorred
     $solidcolorblue
@@ -16,9 +16,12 @@
     $mapnoiseredshift
     $mapsmoothnoisecolorX
     $mapsmoothnoisecolorXY
+    $fractalzoom  
+    $coloroverlay  
   )
 
   (global $step (mut i32) i32.const 0)
+  (global $movementstep (mut i32) i32.const 0)
   (global $xorshiftstate (mut i32) i32.const 0xFA1922DC) ;; State of sudo random gen. Here we initialize with seed value as well.
   
   (func $add (param $lhs i32) (param $rhs i32) (result i32)
@@ -210,7 +213,7 @@
     i32.or
   )
 
-  (func $solidcolorred  (param $x i32) (param $y i32) (result i32)
+  (func $fractalzoom  (param $x i32) (param $y i32) (result i32)
 
     (get_local $x)
     f32.reinterpret/i32
@@ -227,9 +230,9 @@
     (call $getpix)
   )
 
-  ;;(func $solidcolorred  (param $x i32) (param $y i32) (result i32)
-  ;;  i32.const 0xFF0000FF
-  ;;)
+  (func $solidcolorred  (param $x i32) (param $y i32) (result i32)
+   i32.const 0xFF0000FF
+  )
 
   (func $solidcolorblue  (param $x i32) (param $y i32) (result i32)
     i32.const 0xFFFF0000
@@ -273,16 +276,22 @@
   (func $main (param $mapfunc i32) (result i32)
     (local $xoffset i32)
 
-    i32.const 100
+    i32.const 50
     set_local $xoffset
 
     ;;get_global $step
     ;;set_global $xorshiftstate
 
+    ;; Background layer
     (call $looprow (get_local $mapfunc) (get_global $width) (get_global $height) (i32.const 0) (i32.const 0))
-
-    (call $looprow (i32.const 0) (i32.const 400) (i32.const 400) (get_local $xoffset) (i32.const 50))
     
+    ;; Foreground layer 1
+    (call $looprow (i32.const 7) (i32.add (i32.mul (get_global $step) (i32.const 8)) (i32.const 400)) (i32.add (i32.mul (get_global $step) (i32.const 8)) (i32.const 400)) (get_local $xoffset) (i32.const 50))
+
+    ;; Scroll layer
+    (call $looprow (i32.const 8) (i32.add (get_global $movementstep) (i32.const 400)) (i32.const 400) (i32.add (get_global $movementstep)(get_local $xoffset)) (i32.const 50))
+    
+    ;; step is used to produce different frames for an animation sequence by some image generator functions 
     (set_global $step (call $increment (get_global $step)))
     (if 
       (i32.gt_u
@@ -291,6 +300,18 @@
       )
       (then
         (set_global $step (i32.const 0))
+      )
+    ) 
+
+    ;; step is used to produce different frames for an animation sequence by some image generator functions 
+    (set_global $movementstep (call $add (get_global $movementstep)(i32.const 40)))
+    (if 
+      (i32.gt_u
+        (get_global $movementstep)
+        (get_global $width)
+      )
+      (then
+        (set_global $movementstep (i32.const 0))
       )
     ) 
 
